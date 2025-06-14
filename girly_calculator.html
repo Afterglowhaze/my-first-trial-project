@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Girly Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  :root {
+    --pink-light: #f9d5e5;
+    --pink: #e75480;
+    --purple: #8e44ad;
+    --purple-dark: #5e3370;
+    --background: #fff0f6;
+    --button-hover: #c84374;
+    --text-primary: #3a0ca3;
+    --shadow-light: rgba(231, 84, 128, 0.3);
+    --shadow-dark: rgba(142, 68, 173, 0.3);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--background);
+    color: var(--purple-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 16px;
+    transition: background-color 0.3s ease;
+  }
+
+  .calculator {
+    background: white;
+    width: 320px;
+    max-width: 100%;
+    border-radius: 20px;
+    box-shadow:
+      0 4px 15px var(--shadow-light),
+      0 8px 30px var(--shadow-dark);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .calculator-header {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    padding: 24px 20px;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    user-select: none;
+    letter-spacing: 1px;
+  }
+
+  .display {
+    background: #fff0f6;
+    padding: 24px 20px;
+    font-size: 2.25rem;
+    font-weight: 600;
+    min-height: 56px;
+    text-align: right;
+    color: var(--purple-dark);
+    border-bottom: 1px solid var(--pink-light);
+    user-select: none;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 24px 20px 32px;
+    background: white;
+  }
+
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 18px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--pink-light);
+    color: var(--purple-dark);
+    box-shadow: 0 3px 10px var(--shadow-light);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+  }
+
+  button:focus-visible {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+  }
+
+  button:hover {
+    background-color: var(--button-hover);
+    color: white;
+    box-shadow: 0 5px 15px var(--shadow-dark);
+    transform: translateY(-2px);
+  }
+
+  /* Operator buttons */
+  .button-operator {
+    background: var(--purple);
+    color: white;
+    box-shadow: 0 3px 10px var(--shadow-dark);
+  }
+
+  .button-operator:hover {
+    background-color: var(--purple-dark);
+    box-shadow: 0 5px 15px rgba(94,51,112,0.7);
+    transform: translateY(-2px);
+  }
+
+  /* Clear and delete buttons */
+  .button-clear {
+    background: var(--pink);
+    color: white;
+  }
+
+  .button-clear:hover {
+    background-color: #d6497f;
+    box-shadow: 0 5px 15px rgba(214,73,127,0.7);
+    transform: translateY(-2px);
+  }
+
+  /* Equals button spans two columns */
+  .button-equal {
+    grid-column: span 2;
+    background: var(--purple);
+    color: white;
+    box-shadow: 0 3px 10px var(--shadow-dark);
+  }
+
+  .button-equal:hover {
+    background-color: var(--purple-dark);
+    box-shadow: 0 5px 15px rgba(94,51,112,0.7);
+    transform: translateY(-2px);
+  }
+
+  /* Material icons size */
+  .material-icons {
+    font-size: 1.5rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 380px) {
+    .calculator {
+      width: 100%;
+    }
+
+    .display {
+      font-size: 1.75rem;
+      padding: 20px 16px;
+    }
+
+    button {
+      padding: 16px 0;
+      font-size: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <main role="main" class="calculator" aria-label="Girly calculator application">
+    <header class="calculator-header" aria-live="polite" aria-atomic="true">
+      Girly Calculator
+    </header>
+    <div id="display" class="display" aria-live="assertive" aria-atomic="true" aria-relevant="additions">0</div>
+    <section class="buttons" role="group" aria-label="Calculator buttons">
+      <button type="button" class="button-clear" aria-label="Clear all" data-action="clear">C</button>
+      <button type="button" class="button-clear" aria-label="Delete last character" data-action="delete">
+        <span class="material-icons" aria-hidden="true">backspace</span>
+      </button>
+      <button type="button" class="button-operator" aria-label="Divide" data-action="operator">÷</button>
+      <button type="button" class="button-operator" aria-label="Multiply" data-action="operator">×</button>
+
+      <button type="button" aria-label="Number 7" data-action="number">7</button>
+      <button type="button" aria-label="Number 8" data-action="number">8</button>
+      <button type="button" aria-label="Number 9" data-action="number">9</button>
+      <button type="button" class="button-operator" aria-label="Subtract" data-action="operator">−</button>
+
+      <button type="button" aria-label="Number 4" data-action="number">4</button>
+      <button type="button" aria-label="Number 5" data-action="number">5</button>
+      <button type="button" aria-label="Number 6" data-action="number">6</button>
+      <button type="button" class="button-operator" aria-label="Add" data-action="operator">+</button>
+
+      <button type="button" aria-label="Number 1" data-action="number">1</button>
+      <button type="button" aria-label="Number 2" data-action="number">2</button>
+      <button type="button" aria-label="Number 3" data-action="number">3</button>
+      <button type="button" class="button-equal" aria-label="Equals" data-action="equals">=</button>
+
+      <button type="button" aria-label="Number 0" data-action="number" style="grid-column: span 2;">0</button>
+      <button type="button" aria-label="Decimal point" data-action="decimal">.</button>
+    </section>
+  </main>
+
+<script>
+  (() => {
+    const display = document.getElementById('display');
+    let currentInput = '0';
+    let lastInput = '';
+    let operator = null;
+    let operand1 = null;
+    let resetNext = false;
+
+    function updateDisplay() {
+      display.textContent = currentInput;
+    }
+
+    function clearAll() {
+      currentInput = '0';
+      lastInput = '';
+      operator = null;
+      operand1 = null;
+      resetNext = false;
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      if (resetNext) {
+        clearAll();
+        return;
+      }
+      if (currentInput.length === 1) {
+        currentInput = '0';
+      } else {
+        currentInput = currentInput.slice(0, -1);
+      }
+      updateDisplay();
+    }
+
+    function inputNumber(num) {
+      if (resetNext) {
+        currentInput = num;
+        resetNext = false;
+        updateDisplay();
+        return;
+      }
+      if (currentInput === '0') {
+        currentInput = num;
+      } else {
+        currentInput += num;
+      }
+      updateDisplay();
+    }
+
+    function inputDecimal() {
+      if (resetNext) {
+        currentInput = '0.';
+        resetNext = false;
+        updateDisplay();
+        return;
+      }
+      if (!currentInput.includes('.')) {
+        currentInput += '.';
+        updateDisplay();
+      }
+    }
+
+    function calculate() {
+      if (operator === null || resetNext) return;
+      let result;
+      const operand2 = parseFloat(currentInput);
+      const op1 = operand1 !== null ? operand1 : operand2;
+      switch(operator) {
+        case '+':
+          result = op1 + operand2;
+          break;
+        case '-':
+          result = op1 - operand2;
+          break;
+        case '×':
+          result = op1 * operand2;
+          break;
+        case '÷':
+          if (operand2 === 0) {
+            alert("Error: Division by zero");
+            clearAll();
+            return;
+          }
+          result = op1 / operand2;
+          break;
+        default:
+          result = operand2;
+      }
+      currentInput = result.toString();
+      operand1 = result;
+      updateDisplay();
+    }
+
+    function inputOperator(op) {
+      if (operator !== null && !resetNext) {
+        calculate();
+      } else {
+        operand1 = parseFloat(currentInput);
+      }
+      operator = op;
+      resetNext = true;
+    }
+
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('click', e => {
+        const action = button.dataset.action;
+        const value = button.textContent;
+
+        switch(action) {
+          case 'number':
+            inputNumber(value);
+            break;
+          case 'decimal':
+            inputDecimal();
+            break;
+          case 'clear':
+            clearAll();
+            break;
+          case 'delete':
+            deleteLast();
+            break;
+          case 'operator':
+            inputOperator(value);
+            break;
+          case 'equals':
+            calculate();
+            operator = null;
+            resetNext = true;
+            break;
+        }
+      });
+    });
+
+    // Keyboard support
+    window.addEventListener('keydown', e => {
+      if (e.repeat) return;
+      if ((e.key >= '0' && e.key <= '9')) {
+        inputNumber(e.key);
+      } else if (e.key === '.') {
+        inputDecimal();
+      } else if (e.key === 'Backspace') {
+        deleteLast();
+      } else if (e.key === 'Escape') {
+        clearAll();
+      } else if (e.key === '+' || e.key === '-' || e.key === '*'
+        || e.key === '/' ) {
+        let opMap = { '+': '+', '-': '-', '*': '×', '/': '÷' };
+        inputOperator(opMap[e.key]);
+      } else if (e.key === 'Enter' || e.key === '=') {
+        calculate();
+        operator = null;
+        resetNext = true;
+      }
+      e.preventDefault();
+    });
+
+    clearAll();
+  })();
+</script>
+</body>
+</html>
